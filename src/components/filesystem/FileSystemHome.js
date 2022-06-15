@@ -11,7 +11,7 @@ const FileSystemHome = () => {
                 <div>Whenever you download a file or access a web page over the Internet, a file system is involved too.</div>
             </div>
             <div className="column is-6 has-text-centered">
-                <img src={image} width={300} />
+                <img src={image} alt="File vs DBMS" width={300} />
             </div>
         </div>
     )
