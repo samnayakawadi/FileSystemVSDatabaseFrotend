@@ -1,4 +1,4 @@
-import {  useState } from "react"
+import { useState } from "react"
 import axios from "axios"
 import ReactJson from 'react-json-view'
 
@@ -6,29 +6,64 @@ const GETALL = () => {
 
     const [getAllQuestionsData, setGetAllQuestionsData] = useState([])
     const [alert, setAlert] = useState({ status: false });
+    const [responseCode, setResponseCode] = useState(0);
     const [responseTime, setResponseTime] = useState(0);
 
     // useEffect(() => {
 
     // }, [])
 
+
+
     const onLoadQuestionDataHandler = () => {
         setAlert({ status: true, type: "primary", msg: "Fetching all Questions" })
         setTimeout(() => {
-            axios.get(`http://localhost:1977/questions/get/all`).then(res => {
+
+            // const instance = axios.create()
+
+            // instance.interceptors.request.use((config) => {
+            //     config.headers['request-startTime'] = process.hrtime()
+            //     return config
+            // })
+
+            // instance.interceptors.response.use((response) => {
+            //     const start = response.config.headers['request-startTime']
+            //     const end = process.hrtime(start)
+            //     const milliseconds = Math.round((end[0] * 1000) + (end[1] / 1000000))
+            //     response.headers['request-duration'] = milliseconds
+            //     return response
+            // })
+
+            // instance.get(`http://10.244.0.131:1977/questions/get/all`).then((res) => {
+            //     // console.log(res.headers['request-duration'])
+            //     setResponseTime(res.headers['request-duration'])
+            //     setResponseCode(res.status)
+            //     setGetAllQuestionsData(res.data);
+            //     setAlert({ status: false })
+            // }).catch((err) => {
+            //     setResponseCode(err.status)
+            //     // console.error(`Error`)
+            // })
+
+            axios.get(`http://10.244.0.131:1977/questions/get/all`).then(res => {
+
+                setResponseCode(res.status)
                 setGetAllQuestionsData(res.data);
                 setAlert({ status: false })
-                setResponseTime(res.responseTime)
-                console.log(res.responseTime)
+            }).catch(err => {
+                setResponseCode(err.status)
             })
+
+            console.log(responseTime)
+
         }, 1500)
     }
 
     return (
         <div>
             <div className="columns notification is-dark is-centered has-text-centered m-1">
-                <div className="column is-4">End-Point</div>
-                <div className="column is-7">http://localhost:1977/questions/get/all</div>
+                <div className="column is-4">GET ALL Request End-Points</div>
+                <div className="column is-7">http://10.244.0.131:1977/questions/get/all</div>
             </div>
             <div className="columns is-centered">
                 <div className="column pt-5 p-4 is-6">
@@ -94,7 +129,7 @@ const GETALL = () => {
                                     </tr>
                                     <tr>
                                         <td>Shuffle Options</td>
-                                        <td>{singleQuestion.shuffleOptions}</td>
+                                        <td>{singleQuestion.shuffleOptions ? "True" : "False"}</td>
                                     </tr>
                                     <tr>
                                         <td>Maximum Learning Time</td>
@@ -115,6 +150,7 @@ const GETALL = () => {
                 <div className="column is-6 p-4 mt-5">
                     {alert.status && <div className={`notification mb-3 has-text-centered is-${alert.type}`}>{alert.msg}</div>}
                     <button onClick={onLoadQuestionDataHandler} className="button mb-4 is-info is-fullwidth">Request</button>
+                    <div className="notification is-dark has-text-centered title mt-3 is-4">Response Code : {responseCode}</div>
                     <div className="notification is-dark has-text-centered title mt-3 is-4">Response</div>
                     <ReactJson src={getAllQuestionsData} style={{ borderRadius: "5px" }} theme="monokai" />
                     {/* <div className="notification is-dark has-text-centered title mt-4 is-4">POST Data</div>

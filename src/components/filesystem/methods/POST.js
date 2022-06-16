@@ -7,6 +7,7 @@ const POST = () => {
     const [postQuestionData, setPostQuestionData] = useState({ type: "singleChoice", shuffleOptions: false });
     const [alert, setAlert] = useState({ status: false });
     const [responseData, setResponseData] = useState({});
+    const [responseCode, setResponseCode] = useState(0);
 
     const onChangePostQuestionDataHandler = (e) => {
         setPostQuestionData(prevState => {
@@ -23,7 +24,8 @@ const POST = () => {
         setAlert({ status: true, type: "primary", msg: "Processing" })
         console.log(alert)
         setTimeout(() => {
-            axios.post(`http://localhost:1977/questions/post`, postQuestionData).then(res => {
+            axios.post(`http://10.244.0.131:1977/questions/post`, postQuestionData).then(res => {
+                setResponseCode(res.status)
                 setResponseData(res.data)
                 if (res.data.status) {
 
@@ -33,6 +35,7 @@ const POST = () => {
                     setAlert({ status: true, type: "info", msg: res.data.msg })
                 }
             }).catch(err => {
+                setResponseCode(err.status)
                 setResponseData(err.data)
                 setAlert({ status: true, type: "danger", msg: "Server Not Reachable" })
             })
@@ -42,8 +45,8 @@ const POST = () => {
     return (
         <div>
             <div className="columns notification is-dark is-centered has-text-centered m-1">
-                <div className="column is-4">End-Point</div>
-                <div className="column is-7">http://localhost:1977/questions/post</div>
+                <div className="column is-4">POST Request End-Points</div>
+                <div className="column is-7">http://10.244.0.131:1977/questions/post</div>
             </div>
             <div className="columns is-centered">
                 <div className="column p-4 is-6 ">
@@ -144,9 +147,10 @@ const POST = () => {
                 <div className="column is-6 p-4 mt-5">
                     {alert.status && <div className={`notification mb-3 has-text-centered is-${alert.type}`}>{alert.msg}</div>}
                     <button onClick={onSubmitPostQuestionDataHandler} className="button mb-4 is-info is-fullwidth">Send</button>
+                    <div className="notification is-dark has-text-centered title mt-3 is-4">Response Code : {responseCode}</div>
                     <div className="notification is-dark has-text-centered title mt-3 is-4">Response</div>
                     <ReactJson src={responseData} style={{ borderRadius: "5px" }} theme="monokai" />
-                    <div className="notification is-dark has-text-centered title mt-4 is-4">Data</div>
+                    <div className="notification is-dark has-text-centered title mt-4 is-4">Request</div>
                     <ReactJson src={postQuestionData} style={{ borderRadius: "5px" }} theme="monokai" />
                 </div>
 

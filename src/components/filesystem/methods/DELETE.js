@@ -9,11 +9,15 @@ const DELETE = () => {
     const [alert, setAlert] = useState({ status: false });
     const [questionId, setQuestionId] = useState("");
     const [isDeleted, setIsDeleted] = useState(false);
+    const [responseCode, setResponseCode] = useState(0);
 
     const onLoadQuestionDataHandler = () => {
+        setIsEmptyObject(true);
+        setIsDeleted(false)
         setAlert({ status: true, type: "primary", msg: "Sending Delete Request" })
         setTimeout(() => {
-            axios.delete(`http://localhost:1977/questions/delete/single/${questionId}`).then(res => {
+            axios.delete(`http://10.244.0.131:1977/questions/delete/single/${questionId}`).then(res => {
+                setResponseCode(res.status)
                 setGetAllQuestionsData(res.data);
                 setAlert({ status: false })
                 if(res.data.questionId === questionId){
@@ -21,6 +25,13 @@ const DELETE = () => {
                 }
                 if(res.data.status){
                     setIsDeleted(true)
+                    setIsEmptyObject(false);
+                }
+            }).catch(err=>{
+                setResponseCode(err.status)
+                if (err.response.status === 404) {
+                    setAlert({ status: true, type: "info", msg: "You have entered Wrong Question ID" })
+                    setGetAllQuestionsData(err.response.data)
                 }
             })
         }, 1500)
@@ -29,15 +40,15 @@ const DELETE = () => {
     return (
         <div>
             <div className="columns notification is-dark is-centered has-text-centered m-1">
-                <div className="column is-4">End-Point</div>
-                <div className="column is-7">http://localhost:1977/questions/delete/single/{questionId}</div>
+                <div className="column is-4">DELETE Request End-Points</div>
+                <div className="column is-7">http://10.244.0.131:1977/questions/delete/single/{questionId}</div>
             </div>
             <div className="columns is-centered">
                 <div className="column pt-5 p-4 is-6">
                     {isEmptyObject && <div className="notification mt-3 has-text-centered is-info">Enter Valid Question ID to Delete It</div>}
                     {isDeleted && <div className="notification mt-3 has-text-centered is-success">Question Data Deleted Successfully</div>}
                     {/* {alert.status && <div className={`notification m-1 has-text-centered is-${alert.type}`}>{alert.msg}</div>} */}
-                    {alert.status === false && !isEmptyObject && 
+                    {/* {alert.status === false && !isEmptyObject && 
                     <span className="box mt-3">
                         <table className="table is-fullwidth is-hoverable">
                             <thead>
@@ -111,13 +122,14 @@ const DELETE = () => {
 
                             </tbody>
                         </table>
-                    </span>}
+                    </span>} */}
                 </div>
 
                 <div className="column is-6 p-4 mt-5">
                     <input className="input mb-2 is-fullwidth" type="text" name="questionId" onChange={(e) => { setQuestionId(e.target.value) }} placeholder="Enter Question ID" />
                     {alert.status && <div className={`notification mb-3 has-text-centered is-${alert.type}`}>{alert.msg}</div>}
                     <button onClick={onLoadQuestionDataHandler} className="button mb-4 is-info is-fullwidth">Request</button>
+                    <div className="notification is-dark has-text-centered title mt-3 is-4">Response Code : {responseCode}</div>
                     <div className="notification is-dark has-text-centered title mt-3 is-4">Response</div>
                     <ReactJson src={getAllQuestionsData} style={{ borderRadius: "5px" }} theme="monokai" />
                 </div>
