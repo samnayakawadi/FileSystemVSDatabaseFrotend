@@ -10,12 +10,14 @@ const PUT = () => {
     const [questionId, setQuestionId] = useState("");
     const [responseData, setResponseData] = useState({});
     const [responseCode, setResponseCode] = useState(0);
+    const [responseTime, setResponseTime] = useState(0);
     // const [postQuestionData, setPostQuestionData] = useState({ type: "singleChoice", shuffleOptions: getAllQuestionsData.shuffleOptions });
 
     const onLoadQuestionDataHandler = () => {
         setIsEmptyObject(true);
         setAlert({ status: true, type: "primary", msg: "Fetching all Questions" })
         setTimeout(() => {
+            var start = new Date().getTime();
             axios.get(`http://10.244.0.131:1977/questions/get/single/${questionId}`).then(res => {
                 setResponseCode(res.status)
                 setGetAllQuestionsData(res.data);
@@ -28,10 +30,13 @@ const PUT = () => {
                 setResponseCode(err.status)
                 if (err.response.status === 404) {
                     setResponseCode(err.response.status)
-                    setAlert({ status: true, type: "info", msg: "You have entered Wrong Question ID" })
+                    setAlert({ status: true, type: "danger", msg: "You have entered Wrong Question ID" })
                     setResponseData(err.response.data)
                 }
             })
+            var end = new Date().getTime();
+            var time = end - start;
+            setResponseTime(time)
         }, 1500)
     }
 
@@ -50,6 +55,7 @@ const PUT = () => {
         setAlert({ status: true, type: "primary", msg: "Processing" })
         console.log(alert)
         setTimeout(() => {
+            var start = new Date().getTime();
             axios.put(`http://10.244.0.131:1977/questions/put/single`, getAllQuestionsData).then(res => {
                 
                 setResponseCode(res.status)
@@ -66,8 +72,12 @@ const PUT = () => {
                 setResponseData(err.data)
                 setAlert({ status: true, type: "danger", msg: "Server Not Reachable" })
             })
+            var end = new Date().getTime();
+            var time = end - start;
+            setResponseTime(time)
         }, 1000);
-        setIsEmptyObject(true);
+        
+        
     }
 
     return (
@@ -77,8 +87,12 @@ const PUT = () => {
                 <div className="column is-7">http://10.244.0.131:1977/questions/put/single</div>
             </div>
             <div className="columns is-centered">
-                <div className="column pt-5 p-4 is-6">
-                    {isEmptyObject && <div className="notification mt-3 has-text-centered is-info">Enter Valid Question ID to Display Content</div>}
+                <div className="column pt-5 p-4 is-6 mt-1">
+                    <input className="input mt-5 mb-2 is-fullwidth" type="text" name="questionId" onChange={(e) => { setQuestionId(e.target.value) }} placeholder="Enter Question ID" />
+                    {isEmptyObject && <div className="notification mb-2 has-text-centered is-info">Enter Valid Question ID to Display Content</div>}
+                    {alert.status && <div className={`notification mb-2 has-text-centered is-${alert.type}`}>{alert.msg}</div>}
+                    <button onClick={onLoadQuestionDataHandler} className="button mb-2 is-info is-fullwidth">Fetch Data</button>
+                    <button onClick={onSubmitPostQuestionDataHandler} className="button mb-2 is-success is-fullwidth">Update Data</button>
                     {/* {alert.status && <div className={`notification m-1 has-text-centered is-${alert.type}`}>{alert.msg}</div>} */}
                     {alert.status === false && !isEmptyObject &&
                         <span className="box mt-3">
@@ -177,10 +191,7 @@ const PUT = () => {
                 </div>
 
                 <div className="column is-6 p-4 mt-5">
-                    <input className="input mb-2 is-fullwidth" type="text" name="questionId" onChange={(e) => { setQuestionId(e.target.value) }} placeholder="Enter Question ID" />
-                    {alert.status && <div className={`notification mb-3 has-text-centered is-${alert.type}`}>{alert.msg}</div>}
-                    <button onClick={onLoadQuestionDataHandler} className="button mb-4 is-info is-fullwidth">Fetch Data</button>
-                    <button onClick={onSubmitPostQuestionDataHandler} className="button mb-4 is-success is-fullwidth">Update Data</button>
+                    <div className="notification is-dark has-text-centered title mt-3 is-4">Response Time : {responseTime} ms</div>
                     <div className="notification is-dark has-text-centered title mt-3 is-4">Response Code : {responseCode}</div>
                     <div className="notification is-dark has-text-centered title mt-3 is-4">Response</div>
                     <ReactJson src={responseData} style={{ borderRadius: "5px" }} theme="monokai" />
