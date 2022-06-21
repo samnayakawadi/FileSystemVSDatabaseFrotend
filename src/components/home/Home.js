@@ -17,7 +17,7 @@ const Home = () => {
                 </section>
 
                 <div className="">
-                    <div className="card">
+                    <div className="card"> 
                         <div className="card-content">
                             <p className="is-size-6 has-text-centered">
                             Here I will be researching different types of storage we can use in this project. Choose from below options
@@ -27,15 +27,15 @@ const Home = () => {
                         <p className="card-footer-item">
                                 <span>
                                     Go to {" "}
-                                    <Link to="/filesystem">File System</Link>
+                                    <Link to="/dashboard">Dashboard</Link>
                                 </span>
                             </p>
-                            <p className="card-footer-item">
+                            {/* <p className="card-footer-item">
                                 <span>
                                     Go to {" "}
                                     <Link to="/mongodb">Mongo DB</Link>
                                 </span>
-                            </p>
+                            </p> */}
                             {/* <p className="card-footer-item">
                                 <span>
                                     Go to {" "}

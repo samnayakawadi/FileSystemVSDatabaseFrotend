@@ -1,22 +1,35 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
 import ReactJson from 'react-json-view'
+import { useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
 
 const GET = () => {
 
+    const {userDetails} = useContext(UserContext)
     const [getAllQuestionsData, setGetAllQuestionsData] = useState({})
     const [isEmptyObject, setIsEmptyObject] = useState(true);
     const [alert, setAlert] = useState({ status: false });
     const [questionId, setQuestionId] = useState("");
     const [responseCode, setResponseCode] = useState(0);
     const [responseTime, setResponseTime] = useState(0);
+    const [dbPort, setDbPort] = useState(1977);
+
+    useEffect(()=>{
+        if(userDetails.currentDatabase === "fileSystem"){
+            setDbPort(1977)
+        }
+        else{
+            setDbPort(2007)
+        }
+    }, [userDetails])
 
     const onLoadQuestionDataHandler = () => {
         setIsEmptyObject(true);
         setAlert({ status: true, type: "primary", msg: "Fetching all Questions" })
         setTimeout(() => {
             var start = new Date().getTime();
-            axios.get(`http://10.244.0.131:1977/questions/get/single/${questionId}`).then(res => {
+            axios.get(`http://10.244.0.131:${dbPort}/questions/get/single/${questionId}`).then(res => {
                 setResponseCode(res.status)
                 setGetAllQuestionsData(res.data);
                 if (res.data.questionId === questionId) {
@@ -31,6 +44,8 @@ const GET = () => {
                     setResponseCode(err.response.status)
                     setAlert({ status: true, type: "danger", msg: "You have entered Wrong Question ID" })
                     setGetAllQuestionsData(err.response.data)
+                }else{
+                    setAlert({ status: true, type: "danger", msg: "Server Not Reachable" })
                 }
             })
             var end = new Date().getTime();
@@ -43,7 +58,7 @@ const GET = () => {
         <div>
             <div className="columns notification is-dark is-centered has-text-centered m-1">
                 <div className="column is-4">GET Request End-Points</div>
-                <div className="column is-7">http://10.244.0.131:1977/questions/get/single/{questionId}</div>
+                <div className="column is-7">http://10.244.0.131:{dbPort}/questions/get/single/{questionId}</div>
             </div>
             <div className="columns is-centered">
                 <div className="column pt-5 p-4 mt-1 is-6">

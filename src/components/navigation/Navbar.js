@@ -1,9 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 // import logo from "./imgs/cdacnew.png";
+import {useContext} from "react"
+import { UserContext } from "../dashboard/contexts/UserContext";
 
 export default function Navbar() {
+  const {userDetails, setUserDetails} = useContext(UserContext);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   useEffect(() => {
     if (localStorage.getItem("login") === "yes") {
       setIsLoggedIn(true);
@@ -11,6 +15,15 @@ export default function Navbar() {
   }, []);
 
   const [isActive, setisActive] = useState(false);
+
+  const changeDatabaseHandler = ()=>{
+    if(userDetails.currentDatabase === "fileSystem"){
+      setUserDetails({currentDatabase:"mongoDB"});
+    }
+    else{
+      setUserDetails({currentDatabase:"fileSystem"});
+    }
+  }
 
   return (
     <div>
@@ -81,12 +94,12 @@ export default function Navbar() {
           </div>
           <div className="navbar-item">
             <div className="buttons">
-              <Link to="/filesystem">
-                <button className="m-3 button is-success">File System</button>
-              </Link>
-              <Link to="/mongodb">
+              {/* <Link to="/dashboard">
+              </Link> */}
+                <button className="m-3 button is-success" onClick={changeDatabaseHandler}>{userDetails.currentDatabase === "fileSystem" ? "Go to MongoDB" : "Go to File System"}</button>
+              {/* <Link to="/mongodb">
                 <button className="m-3 button is-info">Mongo DB</button>
-              </Link>
+              </Link> */}
               {/* <a target="_blank" className="m-3 button is-primary" rel="noreferrer" href="https://drive.google.com/file/d/1aCWpqd0OSHu-XUVmZ5kWKA-ppKLBV5bP/view?usp=sharing">Download App</a> */}
             </div>
           </div>

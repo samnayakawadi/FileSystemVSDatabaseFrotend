@@ -1,6 +1,6 @@
 import image from "./images/filedb.jpg"
 
-const FileSystemHome = () => {
+const DashboardHome = () => {
     return (
         <div className="columns is-centered is-vcentered mt-3">
             <div className="column is-6 has-text-centered">
@@ -16,4 +16,4 @@ const FileSystemHome = () => {
         </div>
     )
 }
-export default FileSystemHome;
+export default DashboardHome;

@@ -1,9 +1,12 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
 import ReactJson from 'react-json-view'
+import { useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
 
 const PUT = () => {
 
+    const {userDetails} = useContext(UserContext)
     const [getAllQuestionsData, setGetAllQuestionsData] = useState({ shuffleOptions: false })
     const [isEmptyObject, setIsEmptyObject] = useState(true);
     const [alert, setAlert] = useState({ status: false });
@@ -11,14 +14,23 @@ const PUT = () => {
     const [responseData, setResponseData] = useState({});
     const [responseCode, setResponseCode] = useState(0);
     const [responseTime, setResponseTime] = useState(0);
+    const [dbPort, setDbPort] = useState(1977);
     // const [postQuestionData, setPostQuestionData] = useState({ type: "singleChoice", shuffleOptions: getAllQuestionsData.shuffleOptions });
+    useEffect(()=>{
+        if(userDetails.currentDatabase === "fileSystem"){
+            setDbPort(1977)
+        }
+        else{
+            setDbPort(2007)
+        }
+    }, [userDetails])
 
     const onLoadQuestionDataHandler = () => {
         setIsEmptyObject(true);
         setAlert({ status: true, type: "primary", msg: "Fetching all Questions" })
         setTimeout(() => {
             var start = new Date().getTime();
-            axios.get(`http://10.244.0.131:1977/questions/get/single/${questionId}`).then(res => {
+            axios.get(`http://10.244.0.131:${dbPort}/questions/get/single/${questionId}`).then(res => {
                 setResponseCode(res.status)
                 setGetAllQuestionsData(res.data);
                 if (res.data.questionId === questionId) {
@@ -32,6 +44,8 @@ const PUT = () => {
                     setResponseCode(err.response.status)
                     setAlert({ status: true, type: "danger", msg: "You have entered Wrong Question ID" })
                     setResponseData(err.response.data)
+                }else{
+                    setAlert({ status: true, type: "danger", msg: "Server Not Reachable" })
                 }
             })
             var end = new Date().getTime();
@@ -56,7 +70,7 @@ const PUT = () => {
         console.log(alert)
         setTimeout(() => {
             var start = new Date().getTime();
-            axios.put(`http://10.244.0.131:1977/questions/put/single`, getAllQuestionsData).then(res => {
+            axios.put(`http://10.244.0.131:${dbPort}/questions/put/single`, getAllQuestionsData).then(res => {
                 
                 setResponseCode(res.status)
                 setResponseData(res.data)
@@ -75,7 +89,7 @@ const PUT = () => {
             var end = new Date().getTime();
             var time = end - start;
             setResponseTime(time)
-        }, 1000);
+        }, 1500);
         
         
     }
@@ -84,7 +98,7 @@ const PUT = () => {
         <div>
             <div className="columns notification is-dark is-centered has-text-centered m-1">
                 <div className="column is-4">PUT Request End-Points</div>
-                <div className="column is-7">http://10.244.0.131:1977/questions/put/single</div>
+                <div className="column is-7">http://10.244.0.131:{dbPort}/questions/put/single</div>
             </div>
             <div className="columns is-centered">
                 <div className="column pt-5 p-4 is-6 mt-1">

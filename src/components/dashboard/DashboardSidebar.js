@@ -1,7 +1,11 @@
 import { Link, Outlet } from "react-router-dom"
+import { useContext } from "react"
+import { UserContext } from "./contexts/UserContext"
 
+const DashboardSidebar = () => {
+    
+    const {userDetails} = useContext(UserContext)
 
-const FileSystemSidebar = () => {
     return (
         <div>
             {/* <div className="columns is-centered mx-2 mt-6">
@@ -16,33 +20,33 @@ const FileSystemSidebar = () => {
 
                 <div className="column is-2 box p-6 m-3" >
                     <div className="notification is-primary has-text-centered">
-                        File System
+                    {userDetails.currentDatabase === "fileSystem" ? "File System" : "MongoDB"}
                     </div>
                     <aside className="menu">
                         <p className="menu-label">
                             Create the Question
                         </p>
                         <ul className="menu-list">
-                            <li><Link to="/filesystem/post">POST</Link></li>
+                            <li><Link to="/dashboard/post">POST</Link></li>
                         </ul>
                         <p className="menu-label">
                             Get the Question
                         </p>
                         <ul className="menu-list">
-                            <li><Link to="/filesystem/get">GET</Link></li>
-                            <li><Link to="/filesystem/getall">GET {"(All)"}</Link></li>
+                            <li><Link to="/dashboard/get">GET</Link></li>
+                            <li><Link to="/dashboard/getall">GET {"(All)"}</Link></li>
                         </ul>
                         <p className="menu-label">
                             Update the Question
                         </p>
                         <ul className="menu-list">
-                            <li><Link to="/filesystem/put">PUT</Link></li>
+                            <li><Link to="/dashboard/put">PUT</Link></li>
                         </ul>
                         <p className="menu-label">
                             Delete the Question
                         </p>
                         <ul className="menu-list">
-                            <li><Link to="/filesystem/delete">DELETE</Link></li>
+                            <li><Link to="/dashboard/delete">DELETE</Link></li>
                         </ul>
                     </aside>
                 </div>
@@ -54,4 +58,4 @@ const FileSystemSidebar = () => {
         </div>
     )
 }
-export default FileSystemSidebar;
+export default DashboardSidebar;

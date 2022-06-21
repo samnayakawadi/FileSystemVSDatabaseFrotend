@@ -1,14 +1,27 @@
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReactJson from 'react-json-view'
+import { useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
 
 const POST = () => {
 
+    const {userDetails} = useContext(UserContext)
     const [postQuestionData, setPostQuestionData] = useState({ type: "singleChoice", shuffleOptions: false });
     const [alert, setAlert] = useState({ status: false });
     const [responseData, setResponseData] = useState({});
     const [responseCode, setResponseCode] = useState(0);
     const [responseTime, setResponseTime] = useState(0);
+    const [dbPort, setDbPort] = useState(1977);
+    
+    useEffect(()=>{
+        if(userDetails.currentDatabase === "fileSystem"){
+            setDbPort(1977)
+        }
+        else{
+            setDbPort(2007)
+        }
+    }, [userDetails])
 
     const onChangePostQuestionDataHandler = (e) => {
         setPostQuestionData(prevState => {
@@ -26,7 +39,7 @@ const POST = () => {
         console.log(alert)
         setTimeout(() => {
             var start = new Date().getTime();
-            axios.post(`http://10.244.0.131:1977/questions/post`, postQuestionData).then(res => {
+            axios.post(`http://10.244.0.131:${dbPort}/questions/post`, postQuestionData).then(res => {
                 setResponseCode(res.status)
                 setResponseData(res.data)
                 if (res.data.status) {
@@ -44,14 +57,14 @@ const POST = () => {
             var end = new Date().getTime();
             var time = end - start;
             setResponseTime(time)
-        }, 1000);
+        }, 1500);
     }
 
     return (
         <div>
             <div className="columns notification is-dark is-centered has-text-centered m-1">
                 <div className="column is-4">POST Request End-Points</div>
-                <div className="column is-7">http://10.244.0.131:1977/questions/post</div>
+                <div className="column is-7">http://10.244.0.131:{dbPort}/questions/post</div>
             </div>
             <div className="columns is-centered">
                 <div className="column p-4 is-6 mt-3">
