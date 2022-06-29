@@ -1,29 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-// import logo from "./imgs/cdacnew.png";
-import {useContext} from "react"
-import { UserContext } from "../dashboard/contexts/UserContext";
 
 export default function Navbar() {
-  const {userDetails, setUserDetails} = useContext(UserContext);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    if (localStorage.getItem("login") === "yes") {
-      setIsLoggedIn(true);
-    }
-  }, []);
 
   const [isActive, setisActive] = useState(false);
-
-  const changeDatabaseHandler = ()=>{
-    if(userDetails.currentDatabase === "fileSystem"){
-      setUserDetails({currentDatabase:"mongoDB"});
-    }
-    else{
-      setUserDetails({currentDatabase:"fileSystem"});
-    }
-  }
 
   return (
     <div>
@@ -40,8 +20,7 @@ export default function Navbar() {
         <div className="navbar-brand">
           <div href="/" className="mt-2 navbar-item">
             <Link to="/">
-              {/* <img src={logo} alt="Logo" width={90} height={600} /> */}
-              eAssessment
+              eAssessment using FileSystem
             </Link>
           </div>
 
@@ -74,33 +53,16 @@ export default function Navbar() {
                 <Link to="/">
                   <p className="navbar-item ">Home</p>
                 </Link>
-                {isLoggedIn && (
-                  <Link to="/dashboard">
+                <Link to="/filesystem">
                     <p className="navbar-item">Dashboard</p>
                   </Link>
-                )}
                 <div className="navbar-item has-dropdown is-hoverable">
                   <p className="navbar-link">More</p>
                   <div className="navbar-dropdown">
-                    {/* <p className="navbar-item"><a target="_blank" rel="noreferrer" href="https://www.instagram.com/samnayakawadi/">Follow on Instagram</a></p>
-                    <p className="navbar-item"><a target="_blank" rel="noreferrer" href="http://samnayakawadi.epizy.com/">Go to Website</a></p>
-                    <hr className="navbar-divider" /> */}
                     <p className="navbar-item"><a target="_blank" rel="noreferrer" href="mailto:samnayakawadi@gmail.com">Report a Problem</a></p>
-                    {/* <p className="navbar-item">Report an issue</p> */}
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="navbar-item">
-            <div className="buttons">
-              {/* <Link to="/dashboard">
-              </Link> */}
-                <button className="m-3 button is-success" onClick={changeDatabaseHandler}>{userDetails.currentDatabase === "fileSystem" ? "Go to MongoDB" : "Go to File System"}</button>
-              {/* <Link to="/mongodb">
-                <button className="m-3 button is-info">Mongo DB</button>
-              </Link> */}
-              {/* <a target="_blank" className="m-3 button is-primary" rel="noreferrer" href="https://drive.google.com/file/d/1aCWpqd0OSHu-XUVmZ5kWKA-ppKLBV5bP/view?usp=sharing">Download App</a> */}
             </div>
           </div>
         </div>

@@ -1,27 +1,14 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ReactJson from 'react-json-view'
-import { useContext } from "react";
-import { UserContext } from "../contexts/UserContext";
 
 const POST = () => {
 
-    const {userDetails} = useContext(UserContext)
     const [postQuestionData, setPostQuestionData] = useState({ type: "singleChoice", shuffleOptions: false });
     const [alert, setAlert] = useState({ status: false });
     const [responseData, setResponseData] = useState({});
     const [responseCode, setResponseCode] = useState(0);
     const [responseTime, setResponseTime] = useState(0);
-    const [dbPort, setDbPort] = useState(1977);
-    
-    useEffect(()=>{
-        if(userDetails.currentDatabase === "fileSystem"){
-            setDbPort(1977)
-        }
-        else{
-            setDbPort(2007)
-        }
-    }, [userDetails])
 
     const onChangePostQuestionDataHandler = (e) => {
         setPostQuestionData(prevState => {
@@ -39,7 +26,7 @@ const POST = () => {
         console.log(alert)
         setTimeout(() => {
             var start = new Date().getTime();
-            axios.post(`http://10.244.0.131:${dbPort}/questions/post`, postQuestionData).then(res => {
+            axios.post(`http://10.244.0.131:19771/questions/post`, postQuestionData).then(res => {
                 setResponseCode(res.status)
                 setResponseData(res.data)
                 if (res.data.status) {
@@ -61,18 +48,18 @@ const POST = () => {
     }
 
     return (
-        <div>
-            <div className="columns notification is-dark is-centered has-text-centered m-1">
+        <div className="m-3">
+            <div className="columns box is-dark is-centered has-text-centered">
                 <div className="column is-4">POST Request End-Points</div>
-                <div className="column is-7">http://10.244.0.131:{dbPort}/questions/post</div>
+                <div className="column is-7">http://10.244.0.131:19771/questions/post</div>
             </div>
-            <div className="columns is-centered">
-                <div className="column p-4 is-6 mt-3">
-                    <div className="mt-5">
+            <div className="columns box p-0 mt-1 is-centered">
+                <div className="column is-6">
+                    <div className="">
                         {alert.status && <div className={`notification mb-3 has-text-centered is-${alert.type}`}>{alert.msg}</div>}
                         <button onClick={onSubmitPostQuestionDataHandler} className="button mb-3 is-info is-fullwidth">Send</button>
                     </div>
-                    <div className="mt-5 notification is-light">
+                    <div className="is-light">
                         <table className="table is-fullwidth is-hoverable">
                             <thead>
                                 <tr>
@@ -166,10 +153,10 @@ const POST = () => {
 
                     </div>
                 </div>
-                <div className="column is-6 p-4 mt-5">
-                    <div className="notification is-dark has-text-centered title mt-3 is-4">Response Time : {responseTime} ms</div>
-                    <div className="notification is-dark has-text-centered title mt-3 is-4">Response Code : {responseCode}</div>
-                    <div className="notification is-dark has-text-centered title mt-3 is-4">Response</div>
+                <div className="column is-6">
+                    <div className="notification is-dark has-text-centered title is-4">Response Time : {responseTime} ms</div>
+                    <div className="notification is-dark has-text-centered title is-4">Response Code : {responseCode}</div>
+                    <div className="notification is-dark has-text-centered title is-4">Response</div>
                     <ReactJson src={responseData} style={{ borderRadius: "5px" }} theme="monokai" />
                     <div className="notification is-dark has-text-centered title mt-4 is-4">Request</div>
                     <ReactJson src={postQuestionData} style={{ borderRadius: "5px" }} theme="monokai" />

@@ -1,12 +1,9 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import axios from "axios"
 import ReactJson from 'react-json-view'
-import { useContext } from "react";
-import { UserContext } from "../contexts/UserContext";
 
 const PUT = () => {
 
-    const {userDetails} = useContext(UserContext)
     const [getAllQuestionsData, setGetAllQuestionsData] = useState({ shuffleOptions: false })
     const [isEmptyObject, setIsEmptyObject] = useState(true);
     const [alert, setAlert] = useState({ status: false });
@@ -14,23 +11,13 @@ const PUT = () => {
     const [responseData, setResponseData] = useState({});
     const [responseCode, setResponseCode] = useState(0);
     const [responseTime, setResponseTime] = useState(0);
-    const [dbPort, setDbPort] = useState(1977);
-    // const [postQuestionData, setPostQuestionData] = useState({ type: "singleChoice", shuffleOptions: getAllQuestionsData.shuffleOptions });
-    useEffect(()=>{
-        if(userDetails.currentDatabase === "fileSystem"){
-            setDbPort(1977)
-        }
-        else{
-            setDbPort(2007)
-        }
-    }, [userDetails])
 
     const onLoadQuestionDataHandler = () => {
         setIsEmptyObject(true);
-        setAlert({ status: true, type: "primary", msg: "Fetching all Questions" })
+        setAlert({ status: true, type: "primary", msg: "Fetching Question" })
         setTimeout(() => {
             var start = new Date().getTime();
-            axios.get(`http://10.244.0.131:${dbPort}/questions/get/single/${questionId}`).then(res => {
+            axios.get(`http://10.244.0.131:19771/questions/get/single/${questionId}`).then(res => {
                 setResponseCode(res.status)
                 setGetAllQuestionsData(res.data);
                 if (res.data.questionId === questionId) {
@@ -70,7 +57,7 @@ const PUT = () => {
         console.log(alert)
         setTimeout(() => {
             var start = new Date().getTime();
-            axios.put(`http://10.244.0.131:${dbPort}/questions/put/single`, getAllQuestionsData).then(res => {
+            axios.put(`http://10.244.0.131:19771/questions/put/single`, getAllQuestionsData).then(res => {
                 
                 setResponseCode(res.status)
                 setResponseData(res.data)
@@ -95,21 +82,19 @@ const PUT = () => {
     }
 
     return (
-        <div>
-            <div className="columns notification is-dark is-centered has-text-centered m-1">
+        <div className="m-3">
+            <div className="columns box is-dark is-centered has-text-centered">
                 <div className="column is-4">PUT Request End-Points</div>
-                <div className="column is-7">http://10.244.0.131:{dbPort}/questions/put/single</div>
+                <div className="column is-7">http://10.244.0.131:19771/questions/put/single</div>
             </div>
-            <div className="columns is-centered">
-                <div className="column pt-5 p-4 is-6 mt-1">
-                    <input className="input mt-5 mb-2 is-fullwidth" type="text" name="questionId" onChange={(e) => { setQuestionId(e.target.value) }} placeholder="Enter Question ID" />
-                    {isEmptyObject && <div className="notification mb-2 has-text-centered is-info">Enter Valid Question ID to Display Content</div>}
-                    {alert.status && <div className={`notification mb-2 has-text-centered is-${alert.type}`}>{alert.msg}</div>}
-                    <button onClick={onLoadQuestionDataHandler} className="button mb-2 is-info is-fullwidth">Fetch Data</button>
-                    <button onClick={onSubmitPostQuestionDataHandler} className="button mb-2 is-success is-fullwidth">Update Data</button>
-                    {/* {alert.status && <div className={`notification m-1 has-text-centered is-${alert.type}`}>{alert.msg}</div>} */}
+            <div className="columns box p-0 mt-1 is-centered">
+                <div className="column is-6">
+                    <input className="input mb-3 is-fullwidth" type="text" name="questionId" onChange={(e) => { setQuestionId(e.target.value) }} placeholder="Enter Question ID" />
+                    {isEmptyObject && <div className="notification mb-3 has-text-centered is-info">Enter Valid Question ID to Display Content</div>}
+                    {alert.status && <div className={`notification mb-3 has-text-centered is-${alert.type}`}>{alert.msg}</div>}
+                    <button onClick={onLoadQuestionDataHandler} className="button mb-3 is-info is-fullwidth">Fetch Data</button>
+                    <button onClick={onSubmitPostQuestionDataHandler} className="button mb-3 is-success is-fullwidth">Update Data</button>
                     {alert.status === false && !isEmptyObject &&
-                        <span className="box mt-3">
                             <table className="table is-fullwidth is-hoverable">
                                 <thead>
                                     <tr>
@@ -200,16 +185,15 @@ const PUT = () => {
                                         </td></tr>
 
                                 </tbody>
-                            </table>
-                        </span>}
+                            </table>}
                 </div>
 
-                <div className="column is-6 p-4 mt-5">
-                    <div className="notification is-dark has-text-centered title mt-3 is-4">Response Time : {responseTime} ms</div>
-                    <div className="notification is-dark has-text-centered title mt-3 is-4">Response Code : {responseCode}</div>
-                    <div className="notification is-dark has-text-centered title mt-3 is-4">Response</div>
+                <div className="column is-6">
+                    <div className="notification is-dark has-text-centered title is-4">Response Time : {responseTime} ms</div>
+                    <div className="notification is-dark has-text-centered title is-4">Response Code : {responseCode}</div>
+                    <div className="notification is-dark has-text-centered title is-4">Response</div>
                     <ReactJson src={responseData} style={{ borderRadius: "5px" }} theme="monokai" />
-                    <div className="notification is-dark has-text-centered title mt-3 is-4">Request</div>
+                    <div className="notification is-dark has-text-centered title mt-4 is-4">Request</div>
                     <ReactJson src={getAllQuestionsData} style={{ borderRadius: "5px" }} theme="monokai" />
                 </div>
             </div>

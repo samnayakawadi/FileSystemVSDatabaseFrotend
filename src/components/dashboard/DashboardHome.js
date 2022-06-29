@@ -1,14 +1,14 @@
-import image from "./images/filedb.jpg"
+import image from "./images/fileSystem2.png"
 
 const DashboardHome = () => {
     return (
-        <div className="columns is-centered is-vcentered mt-3">
+        <div className="columns box is-centered is-vcentered " style={{margin:"1px"}}>
             <div className="column is-6 has-text-centered">
-                <div className="title">Lets get the answer for most controversial debate.</div>
-                <div>A  file system  defines how files are  named,  stored, and  retrieved  from a storage device.</div>
-                <div>Every time you open a file on your computer or smart device, your operating system uses its file system internally to load it from the storage device.</div>
-                <div>Or when you copy, edit, or delete a file, the file system handles it under the hood.</div>
-                <div>Whenever you download a file or access a web page over the Internet, a file system is involved too.</div>
+                <div className="title">File System : 1977</div>
+                <div>- It provides I/O support for a variety of storage device types.</div>
+                <div>- Minimizes the chances of lost or destroyed data</div>
+                <div>- Helps OS to standardized I/O interface routines for user processes</div>
+                <div>- It provides I/O support for multiple users in a multiuser systems environment.</div>
             </div>
             <div className="column is-6 has-text-centered">
                 <img src={image} alt="File vs DBMS" width={300} />
