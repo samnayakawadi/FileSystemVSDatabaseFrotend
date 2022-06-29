@@ -1,14 +1,15 @@
-import image from "./images/filedb.jpg"
+import image from "./images/mongoDB3.png"
 
 const DashboardHome = () => {
     return (
-        <div className="columns is-centered is-vcentered mt-3">
+        <div className="columns box is-centered is-vcentered " style={{margin:"1px"}}>
             <div className="column is-6 has-text-centered">
-                <div className="title">Lets get the answer for most controversial debate.</div>
-                <div>A  file system  defines how files are  named,  stored, and  retrieved  from a storage device.</div>
-                <div>Every time you open a file on your computer or smart device, your operating system uses its file system internally to load it from the storage device.</div>
-                <div>Or when you copy, edit, or delete a file, the file system handles it under the hood.</div>
-                <div>Whenever you download a file or access a web page over the Internet, a file system is involved too.</div>
+                <div className="title">MongoDB : 2007</div>
+                <div>- Ad-hoc queries for optimized, real-time analytics</div>
+                <div>- Indexing appropriately for better query executions</div>
+                <div>- Replication for better data availability and stability</div>
+                <div>- Sharding</div>
+                <div>- Load balancing</div>
             </div>
             <div className="column is-6 has-text-centered">
                 <img src={image} alt="File vs DBMS" width={300} />
